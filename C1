@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendario 2024</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .calendar-container {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .month-name {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    .nav {
+      margin-top: 20px;
+    }
+    .nav button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="calendar-container">
+    <h2 class="month-name">Enero 2024</h2>
+    <table id="calendar">
+      <thead>
+        <tr>
+          <th>Lunes</th>
+          <th>Martes</th>
+          <th>Miércoles</th>
+          <th>Jueves</th>
+          <th>Viernes</th>
+          <th>Sábado</th>
+          <th>Domingo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Aquí irán los días del mes -->
+      </tbody>
+    </table>
+    <div class="nav">
+      <button onclick="prevMonth()">Anterior</button>
+      <button onclick="nextMonth()">Siguiente</button>
+    </div>
+  </div>
+
+  <script>
+    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const agenda = [
+      ['Espalda', 'Pecho', 'Pierna', 'Hombro', 'Espalda', 'Pecho', 'Descanso'],
+      ['Pierna', 'Hombro', 'Espalda', 'Pecho', 'Pierna', 'Hombro', 'Descanso']
+    ];
+    let currentMonth = 0; // Enero
+    let currentYear = 2024;
+
+    function generateCalendar() {
+      const calendarBody = document.querySelector('#calendar tbody');
+      calendarBody.innerHTML = '';
+
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay(); // 0: Domingo, 1: Lunes, ..., 6: Sábado
+
+      let day = 1;
+      let agendaIndex = firstDayOfMonth === 0 ? 1 : 0; // Inicializar el índice de la agenda según el primer día del mes
+
+      for (let i = 0; i < 6; i++) {
+        let row = document.createElement('tr');
+
+        for (let j = 0; j < 7; j++) {
+          let cell = document.createElement('td');
+          if (i === 0 && j < firstDayOfMonth) {
+            cell.textContent = '';
+          } else if (day > daysInMonth) {
+            break;
+          } else {
+            cell.textContent = day;
+            let dayIndex = (j + 1) % 7; // Ajustar el índice de la agenda para que comience en lunes
+            let agendaItemIndex = dayIndex === 0 ? 6 : dayIndex - 1; // Si es domingo, ajustar el índice para el día de descanso
+            cell.innerHTML += `<br>${agenda[agendaIndex][agendaItemIndex]}`;
+            day++;
+          }
+          row.appendChild(cell);
+        }
+
+        calendarBody.appendChild(row);
+        agendaIndex = (agendaIndex + 1) % agenda.length;
+      }
+    }
+
+    function prevMonth() {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11; // Diciembre
+        currentYear--;
+      }
+      updateMonthName();
+      generateCalendar();
+    }
+
+    function nextMonth() {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0; // Enero
+        currentYear++;
+      }
+      updateMonthName();
+      generateCalendar();
+    }
+
+    function updateMonthName() {
+      const monthNameElement = document.querySelector('.month-name');
+      monthNameElement.textContent = months[currentMonth] + ' ' + currentYear;
+    }
+
+    // Generar el calendario inicial
+    generateCalendar();
+  </script>
+</body>
+</html>
